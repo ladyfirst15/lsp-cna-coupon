@@ -433,10 +433,14 @@ metadata:
     targetCPUUtilizationPercentage: 10  # cpu사용율 10프로 초과 시 
 ```    
 * 부하테스트(Siege)를 활용한 부하 적용 후 서킷브레이킹 / 오토스케일 내역을 확인한다.
-![HPA, Circuit Breaker  SEIGE_STATUS](https://user-images.githubusercontent.com/54210936/93168766-9ced3800-f75e-11ea-9d6b-fdf37591b97a.jpg)
-![HPA  TOBE_STATUS](https://user-images.githubusercontent.com/54210936/93167897-95c52a80-f75c-11ea-8f0e-51a94332141b.jpg)
+1. 부하테스트 전, minReplicas=1로 1개의 pod만이 떠있는 것을 확인
+![auto_1](https://user-images.githubusercontent.com/69958878/93374959-6d3f4c80-f892-11ea-8d55-88f169967738.png)
+2. 부하테스트하여, 오토스케일링 된 pod 내역 확인
+![503](https://user-images.githubusercontent.com/69958878/93374920-5dc00380-f892-11ea-9a46-e32c9a464361.jpg)
+![auto_result](https://user-images.githubusercontent.com/69958878/93374971-716b6a00-f892-11ea-937d-eb1c72b586a4.png)
 
-</br>
+
+
 
 ## 무정지 배포
 
