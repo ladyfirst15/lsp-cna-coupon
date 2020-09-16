@@ -243,11 +243,9 @@ Saga Patter :
       }
   }
 ```
-</br>
 - ORDER 서비스에서 쿠폰 상태 업데이트 확인 (ORDER 서비스에 쿠폰상태가 필요 없지만, SAGA 패턴 확인을 위함)
 ![orderPostResut](https://user-images.githubusercontent.com/69958878/93352443-cf3d8900-f875-11ea-9079-3ebce9c415d3.png)
 
-</br>
 
 ## Gateway
 하나의 접점으로 서비스를 관리할 수 있는 Gateway를 통한 서비스라우팅을 적용 한다. Loadbalancer를 이용한 각 서비스의 접근을 확인 함.
