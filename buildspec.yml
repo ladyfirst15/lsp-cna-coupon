@@ -70,8 +70,8 @@ phases:
               strategy:
                 type: RollingUpdate
                 rollingUpdate:
-                  maxSurge: 1
-                  maxUnavailable: 0
+                maxSurge: 1
+                maxUnavailable: 0
             selector:
               matchLabels:
                 app: $IMAGE_REPO_NAME
