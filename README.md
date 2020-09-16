@@ -48,7 +48,7 @@
 # 분석/설계
 
 ## Event Storming 결과
-* MSAEz 로 모델링한 이벤트스토밍 결과 : http://www.msaez.io/#/storming/t5Z5EXdDP0UOZDvGzeNH61hF8qG3/mine/52e31337a76ddeacc1d288ea11e24158/-MH4jm58lJNE_9tgT82F
+* MSAEz 로 모델링한 이벤트스토밍 결과 : http://labs.msaez.io/#/storming/ecU7zzeUBxdYwUDu64Yfh34lznp2/mine/ac871e565e4b8d2e4dbe3a770cc8bbea/-MHAwa2m7jURuMoDzgD4
 ![eventStorming](https://user-images.githubusercontent.com/69958878/93348727-8e437580-f871-11ea-9658-d9cddd14f91c.png)
 
 ### 이벤트 도출
@@ -173,6 +173,7 @@ public void onPostPersist(){
     }
 }
 ```
+![coupon](https://user-images.githubusercontent.com/69958878/93352458-d4023d00-f875-11ea-9f79-b54867858aa9.png)
 
 </br>
 
@@ -201,6 +202,8 @@ Saga Patter :
       }
 
   }
+![orderPost](https://user-images.githubusercontent.com/69958878/93352415-c5b42100-f875-11ea-835d-35fddb0594fb.png) 
+![coupon](https://user-images.githubusercontent.com/69958878/93352458-d4023d00-f875-11ea-9f79-b54867858aa9.png)  
 
 ...
 # Coupon이 신규발행이 완료되면 Order 서비스에 Coupon 완료 정보 전송 (PUB/SUB)
@@ -230,6 +233,7 @@ Saga Patter :
       }
   }
 ```
+![orderPostResut](https://user-images.githubusercontent.com/69958878/93352443-cf3d8900-f875-11ea-9079-3ebce9c415d3.png)
 
 </br>
 
@@ -329,6 +333,8 @@ server:
             e.printStackTrace();
         }
     }
+![mypages](https://user-images.githubusercontent.com/69958878/93352476-d95f8780-f875-11ea-8e55-b7aadcac59a1.png)
+
 # 쿠폰발행 발행취소(CouponSendCancel) mypage 업데이트
     @StreamListener(KafkaProcessor.INPUT)
     public void whenCouponSendCancelled_then_UPDATE_7(@Payload CouponSendCancelled couponSendCancelled) {
