@@ -2,8 +2,8 @@ version: 0.2
 
 env:
   variables:
-    IMAGE_REPO_NAME: "point"
-    _PROJECT_NAME: "point"
+    IMAGE_REPO_NAME: "coupon"
+    _PROJECT_NAME: "coupon"
 
 phases:
   install:
