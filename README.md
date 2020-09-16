@@ -206,16 +206,11 @@ Saga Patter :
   }
 ```
 - 주문 정상 접수
-</br>
 ![orderPost](https://user-images.githubusercontent.com/69958878/93352415-c5b42100-f875-11ea-835d-35fddb0594fb.png) 
 
-</br>
 
 - 쿠폰 정상 발행
-</br>
 ![coupon](https://user-images.githubusercontent.com/69958878/93352458-d4023d00-f875-11ea-9f79-b54867858aa9.png)  
-
-</br>
 
 
 ```
