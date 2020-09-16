@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
     IMAGE_REPO_NAME: "coupon"
-    _PROJECT_NAME: "coupon"
+    _PROJECT_NAME: "admin14-coupon"
 
 phases:
   install:
