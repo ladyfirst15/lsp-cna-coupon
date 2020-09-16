@@ -202,10 +202,11 @@ Saga Patter :
       }
 
   }
+```
 ![orderPost](https://user-images.githubusercontent.com/69958878/93352415-c5b42100-f875-11ea-835d-35fddb0594fb.png) 
 ![coupon](https://user-images.githubusercontent.com/69958878/93352458-d4023d00-f875-11ea-9f79-b54867858aa9.png)  
 
-...
+```
 # Coupon이 신규발행이 완료되면 Order 서비스에 Coupon 완료 정보 전송 (PUB/SUB)
  @PostPersist
   public void onPostPersist(){
@@ -217,7 +218,9 @@ Saga Patter :
       }
   }
   
-...
+```
+
+```
 # 주문서비스의 쿠폰상태 설정 (PUB/SUB)
   @StreamListener(KafkaProcessor.INPUT)
   public void wheneverCouponSended_CouponInfoUpdate(@Payload CouponSended couponSended){
