@@ -358,6 +358,7 @@ server:
 
 
  ```
+![mypages_cancel](https://user-images.githubusercontent.com/69958878/93354138-a6b68e80-f877-11ea-87e0-656dc1f5bc9c.png)
 ![cqrs](https://user-images.githubusercontent.com/54210936/93281210-987c5a00-f806-11ea-835b-2cea09bf6466.png)
 
 </br>
