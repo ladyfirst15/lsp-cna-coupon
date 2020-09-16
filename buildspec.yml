@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
     IMAGE_REPO_NAME: "coupon"
-    _PROJECT_NAME: "admin14-coupon"
+    _PROJECT_NAME: "admin15-coupon"
 
 phases:
   install:
@@ -96,7 +96,7 @@ phases:
                     readinessProbe:
                       tcpSocket:
                         port: 8080
-                      initialDelaySeconds: 15
+                      initialDelaySeconds: 120
                       periodSeconds: 20
                     livenessProbe:
                       tcpSocket:
@@ -107,8 +107,7 @@ phases:
                   - name: volume
                     persistentVolumeClaim:
                       claimName: aws-efs         
-          
-          
+          EOF  
       - |
           cat <<EOF | kubectl apply -f -
           apiVersion: autoscaling/v1
@@ -131,8 +130,27 @@ phases:
             #    target:
             #      type: Utilization
             #      averageUtilization: 10
-          #EOF
-          
+         EOF
+     - |  
+          cat <<EOF | kubectl apply -f -
+          apiVersion: networking.istio.io/v1alpha3
+          kind: DestinationRule
+          metadata:
+            name: dr-coupon
+            namespace: teamc
+          spec:
+            host: $_PROJECT_NAME
+            trafficPolicy:
+              connectionPool:
+                http:
+                  http1MaxPendingRequests: 1
+                  maxRequestsPerConnection: 1
+              outlierDetection:
+                interval: 1s
+                consecutiveErrors: 1
+                baseEjectionTime: 10m
+                maxEjectionPercent: 100
+          EOF     
 cache:
   paths:
     - '/root/.m2/**/*'
