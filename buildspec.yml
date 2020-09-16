@@ -114,7 +114,7 @@ phases:
           apiVersion: autoscaling/v1
           kind: HorizontalPodAutoscaler
           metadata:
-            name: skcchpa_cook
+            name: skcchpa_coupon
             namespace: teamc
           spec:
             scaleTargetRef:
