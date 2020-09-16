@@ -498,15 +498,18 @@ volumes:                                # 로그 파일 생성을 위한 EFS, PV
 ## SelfHealing
 운영 안정성의 확보를 위해 마이크로서비스가 아웃된 뒤에 다시 프로세스가 올라오는 환경을 구축한다. 프로세스가 죽었을 때 다시 기동됨을 확인함.
 ```
-#AWS의 각 codebuild에 설정(https://github.com/dew0327/final-cna-order/blob/master/buildspec.yml)
+#AWS의 각 codebuild에 설정(https://github.com/ladyfirst15/lsp-cna-coupon/blob/master/buildspec.yml)
 livenessProbe:
-  tcpSocket:
-  port: 8080
-  initialDelaySeconds: 20     # 서비스 어플 기동 후 20초 뒤 시작
-  periodSeconds: 3            # 3초 주기로 livenesProbe 실행 
+  exec:
+    command:
+    - cat
+    - /mnt/aws/logs/coupon-application.log
+  initialDelaySeconds: 20      # 서비스 어플 기동 후 20초 뒤 시작
+  periodSeconds: 30            # 30초 주기로 livenesProbe 실행 
 ```
-![Self-healing  console test](https://user-images.githubusercontent.com/54210936/93280338-5b16cd00-f804-11ea-9687-2d9f8cac9ff1.jpg)
-
+- /mnt/aws/logs/coupon-application.log 가 삭제 될 때, coupon 프로세스가 kill된 후에, 자동으로 SelfHealing되는 과정 확인
+![liveness_delete](https://user-images.githubusercontent.com/69958878/93369584-89d78680-f88a-11ea-8d04-d8b189abe407.png)
+![liveness](https://user-images.githubusercontent.com/69958878/93369578-880dc300-f88a-11ea-93b3-0df5822e973e.png)
 </br>
 </br>
 
