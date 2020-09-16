@@ -1,4 +1,4 @@
-# Intensive Lv2. TeamC
+# Intensive Lv2. 이상평
 
 음식을 주문하고 요리하여 배달하는 현황을 확인 할 수 있는 CNA의 개발
 
@@ -23,15 +23,17 @@
 
 # 서비스 시나리오
 
-음식을 주문하고, 요리현황 및 배달현황을 조회
+음식을 주문하고, 요리현황 및 배달현황, 쿠폰발행 현황 을 조회
 
 ## 기능적 요구사항
 
 1. 고객이 주문을 하면 주문정보를 바탕으로 요리가 시작된다.
+1. 고객이 주문을 하면 신규쿠폰이 발행된다.
 1. 요리가 완료되면 배달이 시작된다. 
 1. 고객이 주문취소를 하게 되면 요리가 취소된다.
+1. 고객이 주문취소를 하게 되면 쿠폰발행도 취소된다.
 1. 고객 주문에 재고가 없을 경우 주문이 취소된다. 
-1. 고객은 Mypage를 통해, 주문과 요리, 배달의 전체 상황을 조회할수 있다.
+1. 고객은 Mypage를 통해, 주문과 요리, 배달 그리고 쿠폰발행의 전체 상황을 조회할수 있다.
 
 ## 비기능적 요구사항
 1. 장애격리
@@ -55,11 +57,13 @@
 1. 요리재고체크됨
 1. 요리완료
 1. 배달
+1. 쿠폰발행됨
+1. 쿠폰발행취소됨
 
 
 ### 어그리게잇으로 묶기
 
-  * 고객의 주문(Order), 식당의 요리(Cook), 배달(Delivery)은 그와 연결된 command와 event 들에 의하여 트랙잭션이 유지되어야 하는 단위로 묶어 줌.
+  * 고객의 주문(Order), 식당의 요리(Cook), 배달(Delivery), 쿠폰(Coupon) 은 그와 연결된 command와 event 들에 의하여 트랙잭션이 유지되어야 하는 단위로 묶어 줌.
 
 ### Policy 부착 
 
@@ -75,6 +79,8 @@
  * 주문이 취소되면, 요리취소 내용을 고객에게 전달한다.(ok)
  * 고객이 주문 시 재고량을 체크한다.(ok)
  * 재고가 없을 경우 주문이 취소된다.(ok)
+ * 고객이 주문 시 신규 쿠폰이 발행된다.
+ * 고객이 주문 취소시 신규 쿠폰이 취소된다.
  * 고객은 Mypage를 통해, 주문과 요리, 배달의 전체 상황을 조회할수 있다.(ok)
 
 </br>
@@ -93,24 +99,23 @@
 
 ```
 package myProject_LSP;
-
-import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
-import java.util.List;
+import javax.persistence.*;
 
 @Entity
-@Table(name="Order_table")
-public class Order {
+@Table(name="Coupon_table")
+public class Coupon {
 
+
+    private static int couponQty=10;
+    private boolean couponFlowChk=true;
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
-    private Integer restaurantId;
-    private Integer restaurantMenuId;
-    private Integer customerId;
-    private Integer qty;
-    private Long modifiedDate;
+    private Long orderId;
     private String status;
+    private Long sendDate;
+    private String couponKind;
     
     ....
 }
@@ -119,28 +124,38 @@ public class Order {
 ```
 package myProject_LSP;
 import org.springframework.data.repository.PagingAndSortingRepository;
-public interface OrderRepository extends PagingAndSortingRepository<Order, Long>{
+import java.util.Optional;
 
+public interface CouponRepository extends PagingAndSortingRepository<Coupon, Long>{
+    Optional<Coupon> findByOrderId(Long orderId);
 }
 ```
 </br>
 
-## 동기식 호출과 Fallback 처리
+## 동기식 호출
 
 분석단계에서의 조건 중 하나로 주문->취소 간의 호출은 트랜잭션으로 처리. 호출 프로토콜은 Rest Repository의 REST 서비스를 FeignClient 를 이용하여 호출.
-- 요리(cook) 서비스를 호출하기 위하여 Stub과 (FeignClient) 를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
+- 쿠폰(Coupon) 서비스를 호출하기 위하여 Stub과 (FeignClient) 를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
 
 ```
-@FeignClient(name="cook", url="${api.url.cook}")
-public interface CancellationService {
 
-  @RequestMapping(method= RequestMethod.GET, path="/cancellations")
-  public void cancel(@RequestBody Cancellation cancellation);
+package myProject_LSP.external;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@FeignClient(name="coupon", url="${api.url.coupon}")
+public interface CouponService {
+
+    @RequestMapping(method= RequestMethod.POST, path="/coupons")
+    public void couponSend(@RequestBody Coupon coupon);
 
 }
 ```
 
-- 주문이 취소 될 경우 Cancellation 현황에 취소 내역을 접수한다.
+- 주문이 접수 될 경우 Coupon 현황에 신규발행 내역을 접수한다.
 ```
 @PrePersist
 public void onPrePersist(){
@@ -148,61 +163,72 @@ public void onPrePersist(){
    BeanUtils.copyProperties(this, cookCancelled);
    cookCancelled.setStatus("COOK : ORDER CANCELED");
    cookCancelled.publishAfterCommit();
+@PostPersist
+public void onPostPersist(){
+   if("COUPON : COUPON SENDED".equals(this.getStatus())){
+      //ORDER -> COUPON SEND 경우
+      CouponSended couponSended = new CouponSended()
+      BeanUtils.copyProperties(this, couponSended);
+      couponSended.publishAfterCommit();
+    }
+}
 ```
 
 </br>
 
 ## 비동기식 호출과 Saga Pattern
 
-주문 접수 및 배달 접수, 재고부족으로 인한 주문 취소는 비동기식으로 처리하여 시스템 상황에 따라 접수 및 취소가 블로킹 되지 않도록 처리 한다. 
-요리 단계 접수시에는 재고를 체크하고 재고가 부족할 경우 주문단계로 비동기식 요리 불가 발행(publish). 
+비동기식 호출 : 신규쿠폰 발행, 신규쿠폰 취소는 비동기식으로 처리하여 시스템 상황에 따라 발행 및 취소가 블로킹 되지 않도록 처리 한다. 
+Saga Patter : 
+1. 고객이 음식 주문을 접수하게 되면, Coupon에 신규발행이 접수된다.
+1. Coupon이 신규발행이 완료되면, Coupon서비스에서 Order서비스에 Coupon 상태를 전송한다.
+1. Order서비스는 Coupon 상태를 업데이트한다. (Order 서비스에서 Coupon 성공 인지)
+
  
 ```
-# 주문시 재고량 체크하는 Cook 로직
-@Entity
-@Table(name="Cook_table")
-public class Cook {
-    private boolean flowchk = true;
-    ....
-    @PostPersist
-    public void onPostPersist(){
-        if(flowchk) {   // 요리를 할 수 있는 재고가 있을 때 요리를 시작한다
-            Cooked cooked = new Cooked();
-            BeanUtils.copyProperties(this, cooked);
-            this.setStatus("COOK : ORDER RECEIPT");
-            this.qty--;
-            cooked.publishAfterCommit();
-        }else{
-            CookQtyChecked cookQtyChecked = new CookQtyChecked();
-            BeanUtils.copyProperties(this, cookQtyChecked);
-            cookQtyChecked.publishAfterCommit();
-        }
-    }
+# 고객이 음식 주문 시, Coupon에 신규발행 호출 (REST API)
+@PostPersist
+  public void onPostPersist(){
+      Ordered ordered = new Ordered();
+      BeanUtils.copyProperties(this, ordered);
+      if(!"ORDER : COOK CANCELED".equals(ordered.getStatus())){
+          ordered.publishAfterCommit();
+          /*수정*/
+          myProject_LSP.external.Coupon coupon = new myProject_LSP.external.Coupon();
+          coupon.setOrderId(this.getId());
+          coupon.setStatus("ORDER : COUPON SEND");
+          OrderApplication.applicationContext.getBean(myProject_LSP.external.CouponService.class).couponSend(coupon);
+      }
 
-    @PrePersist
-    public void onPrePersist(){
-        // 요리를 할 수 있는 재고가 없을 때 요리를 시작한다
-        if(this.getQty() <= 0) {
-            this.setStatus("COOK : QTY OVER");
-            flowchk = false;
-        }
-    }
-}
+  }
 
 ...
-# 주문서비스의 Cancel 설정
-    @Autowired
-    OrderRepository orderRepository;
+# Coupon이 신규발행이 완료되면 Order 서비스에 Coupon 완료 정보 전송 (PUB/SUB)
+ @PostPersist
+  public void onPostPersist(){
+      if("COUPON : COUPON SENDED".equals(this.getStatus())){
+          //ORDER -> COUPON SEND 경우
+          CouponSended couponSended = new CouponSended();
+          BeanUtils.copyProperties(this, couponSended);
+          couponSended.publishAfterCommit();
+      }
+  }
+  
+...
+# 주문서비스의 쿠폰상태 설정 (PUB/SUB)
+  @StreamListener(KafkaProcessor.INPUT)
+  public void wheneverCouponSended_CouponInfoUpdate(@Payload CouponSended couponSended){
 
-    @StreamListener(KafkaProcessor.INPUT)
-    public void wheneverCookQtyChecked_CookCancelUpdate(@Payload CookQtyChecked cookQtyChecked){
-        if(cookQtyChecked.isMe()){
-            Optional<Order> orderOptional = orderRepository.findById(cookQtyChecked.getOrderId());
-            Order order = orderOptional.get();
-            order.setStatus("ORDER : QTY OVER CANCELED");
-            orderRepository.save(order);
-        }
-    }
+      if(couponSended.isMe()){
+          System.out.println("##### listener CouponInfoUpdate : " + couponSended.toJson());
+          Optional<Order> orderOptional = orderRepository.findById(couponSended.getOrderId());
+          Order order = orderOptional.get();
+          if("COUPON : COUPON SENDED".equals(couponSended.getStatus())){
+              order.setCouponStatus("ORDER : COUPON SENDED SUCCESS");
+          }
+          orderRepository.save(order);
+      }
+  }
 ```
 
 </br>
