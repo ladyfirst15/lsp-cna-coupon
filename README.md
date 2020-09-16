@@ -284,8 +284,8 @@ spring:
 server:
   port: 8080
 ```
-![gateway_LoadBalancer (1)](https://user-images.githubusercontent.com/54210936/93281154-7aaef500-f806-11ea-997d-c70dc6a81056.png)
-![gateway_LoadBalancer_delivery (1)](https://user-images.githubusercontent.com/54210936/93281029-1e4bd580-f806-11ea-9b95-70b9985b6fde.png)
+![gateway](https://user-images.githubusercontent.com/69958878/93355435-07929680-f879-11ea-8b9f-8844fb57565e.png)
+![gateway-w](https://user-images.githubusercontent.com/69958878/93355443-095c5a00-f879-11ea-97b5-c98ebd046bcc.png)
 
 </br>
 
