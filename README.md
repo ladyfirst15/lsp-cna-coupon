@@ -207,10 +207,10 @@ Saga Patter :
 ```
 - 주문 정상 접수
 ![orderPost](https://user-images.githubusercontent.com/69958878/93352415-c5b42100-f875-11ea-835d-35fddb0594fb.png) 
-</br>
+
 - 쿠폰 정상 발행
 ![coupon](https://user-images.githubusercontent.com/69958878/93352458-d4023d00-f875-11ea-9f79-b54867858aa9.png)  
-</br>
+
 ```
 # Coupon이 신규발행이 완료되면 Order 서비스에 Coupon 완료 정보 전송 (PUB/SUB)
  @PostPersist
