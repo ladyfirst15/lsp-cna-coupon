@@ -93,10 +93,12 @@ phases:
                       initialDelaySeconds: 15
                       periodSeconds: 20
                     livenessProbe:
-                      tcpSocket:
-                        port: 8080
+                      exec:
+                        command:
+                        - cat
+                        - /mnt/aws/logs/coupon-application.log
                       initialDelaySeconds: 20
-                      periodSeconds: 30    
+                      periodSeconds: 3 
                 volumes:
                   - name: volume
                     persistentVolumeClaim:
