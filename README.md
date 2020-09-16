@@ -49,7 +49,7 @@
 
 ## Event Storming 결과
 * MSAEz 로 모델링한 이벤트스토밍 결과 : http://www.msaez.io/#/storming/t5Z5EXdDP0UOZDvGzeNH61hF8qG3/mine/52e31337a76ddeacc1d288ea11e24158/-MH4jm58lJNE_9tgT82F
-![EventStorming_Restaurant](https://user-images.githubusercontent.com/54210936/93179266-66201d80-f770-11ea-9530-aae4dfef7e4d.png)
+![eventStorming](https://user-images.githubusercontent.com/69958878/93348727-8e437580-f871-11ea-9658-d9cddd14f91c.png)
 
 ### 이벤트 도출
 1. 주문됨
