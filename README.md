@@ -469,19 +469,18 @@ metadata:
 </br>
 
 ## 마이크로서비스 로깅 관리를 위한 PVC 설정
-AWS의 EFS에 파일시스템을 생성(EFS-teamc (fs-96929df7))하고 서브넷과 클러스터(TeamC-final)를 연결하고 PVC를 설정해준다. 각 마이크로 서비스의 로그파일이 EFS에 정상적으로 생성되고 기록됨을 확인 함.
+AWS의 EFS에 파일시스템을 생성(EFS-teamc (fs-28564909))하고 서브넷과 클러스터(TeamC-final)를 연결하고 PVC를 설정해준다. 각 마이크로 서비스의 로그파일이 EFS에 정상적으로 생성되고 기록됨을 확인 함.
 ```
-#AWS의 각 codebuild에 설정(https://github.com/dew0327/final-cna-order/blob/master/buildspec.yml)
+#AWS의 각 codebuild에 설정(https://github.com/ladyfirst15/lsp-cna-coupon/blob/master/buildspec.yml)
 volumeMounts:  
-- mountPath: "/mnt/aws"    # ORDER서비스 로그파일 생성 경로
+- mountPath: "/mnt/aws"    # COUPON 서비스 로그파일 생성 경로
   name: volume                 
 volumes:                                # 로그 파일 생성을 위한 EFS, PVC 설정 정보
 - name: volume
   persistentVolumeClaim:
   claimName: aws-efs  
 ```
-![PVC  console - log file test](https://user-images.githubusercontent.com/54210936/93280070-bc8a6c00-f803-11ea-8c0e-ab82c729dfd6.jpg)
-
+![pvc](https://user-images.githubusercontent.com/69958878/93348772-9c919180-f871-11ea-8a1a-f8ae375437a4.png)
 </br>
 
 ## SelfHealing
