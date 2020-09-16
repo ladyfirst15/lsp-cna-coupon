@@ -207,9 +207,10 @@ Saga Patter :
 ```
 - 주문 정상 접수
 ![orderPost](https://user-images.githubusercontent.com/69958878/93352415-c5b42100-f875-11ea-835d-35fddb0594fb.png) 
-- 쿠폰 정상 
+</br>
+- 쿠폰 정상 발행
 ![coupon](https://user-images.githubusercontent.com/69958878/93352458-d4023d00-f875-11ea-9f79-b54867858aa9.png)  
-
+</br>
 ```
 # Coupon이 신규발행이 완료되면 Order 서비스에 Coupon 완료 정보 전송 (PUB/SUB)
  @PostPersist
@@ -240,6 +241,8 @@ Saga Patter :
       }
   }
 ```
+</br>
+- ORDER 서비스에서 쿠폰 상태 업데이트 확인 (ORDER 서비스에 쿠폰상태가 필요 없지만, SAGA 패턴 확인을 위함)
 ![orderPostResut](https://user-images.githubusercontent.com/69958878/93352443-cf3d8900-f875-11ea-9079-3ebce9c415d3.png)
 
 </br>
@@ -318,7 +321,8 @@ server:
             e.printStackTrace();
         }
     }
-
+```
+```
 # 쿠폰발행 발행(CouponSend) mypage 업데이트
     @StreamListener(KafkaProcessor.INPUT)
     public void whenCouponSended_then_UPDATE_6(@Payload CouponSended couponSended) {
@@ -340,8 +344,11 @@ server:
             e.printStackTrace();
         }
     }
+```
+- mypage에 COUPON 발행상태 업데이트 확인
 ![mypages](https://user-images.githubusercontent.com/69958878/93352476-d95f8780-f875-11ea-8e55-b7aadcac59a1.png)
 
+```
 # 쿠폰발행 발행취소(CouponSendCancel) mypage 업데이트
     @StreamListener(KafkaProcessor.INPUT)
     public void whenCouponSendCancelled_then_UPDATE_7(@Payload CouponSendCancelled couponSendCancelled) {
@@ -365,6 +372,8 @@ server:
 
 
  ```
+ </br>
+ - mypage에 COUPON 회수(삭제)상태 업데이트 확인
 ![mypages_cancel](https://user-images.githubusercontent.com/69958878/93354138-a6b68e80-f877-11ea-87e0-656dc1f5bc9c.png)
 ![cqrs](https://user-images.githubusercontent.com/54210936/93281210-987c5a00-f806-11ea-835b-2cea09bf6466.png)
 
