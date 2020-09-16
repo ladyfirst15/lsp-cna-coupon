@@ -75,7 +75,7 @@ phases:
                   app: $_PROJECT_NAME
               spec:
                 containers:
-                  - name: $_PROJECT_NAME
+                  - name: $IMAGE_REPO_NAME
                     image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$_PROJECT_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION
                     ports:
                       - containerPort: 8080
@@ -116,7 +116,7 @@ phases:
               name: $_PROJECT_NAME
             minReplicas: 1
             maxReplicas: 3
-            targetCPUUtilizationPercentage: 10
+            targetCPUUtilizationPercentage: 50
             #metrics:
             #- type: Resource
             #  resource:
